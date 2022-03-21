@@ -1,70 +1,25 @@
 # -*- coding: UTF-8 -*-
 
-import pandas as pd
-import codecs
-from random import choice
-from xpinyin import Pinyin
-
-file_path = ''
-file_name = 'chengyu_utf8.txt'
-
-
-def get_idiom_pron_set(txt_path, txt_name, encoding_type='utf-8'):
-    # l是用来保存列表的列表，每个小列表中包含三个元素[<成语>,<成语首字拼音>,<成语末字拼音>]
-    l = []
-    p = Pinyin()
-    with codecs.open(txt_path + txt_name, 'r', encoding=encoding_type) as raw_txt:
-        for line in raw_txt:
-            # 去掉前后空格
-            normal_line = line.strip()
-            # 转换为[成语,拼音]列表
-            normal_list = normal_line.split(" ==> ")
-            # 得到对应成语的无音节发音
-            pron = p.get_pinyin(normal_list[0], ' ').split(' ')
-            l.append([normal_list[0], pron[0], pron[-1]])
-    # 创建DataFrame
-    df = pd.DataFrame(l, columns=['idiom', 'first', 'last'])
-    return df
-
+import IdiomSet
+import Drawer
 
 if __name__ == '__main__':
-    df = get_idiom_pron_set(file_path, file_name)
-    print(df)
+    # 创建成语集对象
+    idiom_set = IdiomSet.IdiomSet()
+    # 设置成语集对象中的格式化数据（导入chengyu_utf8.txt后转化而得）
+    idiom_set.set_idiom_df()
 
-    # 结果列表
-    res_list = ['侯阳洋']
+    # 第一个成语
+    first_idiom = '侯阳洋'
+    # 接龙次数
+    solitaire_time = 10
 
-    first_word = ''
-    last_word = 'yang'
+    # 进行成语接龙，将接龙结果保存到了成语集对象的solitaire_set列表中
+    idiom_set.set_solitaire_list(first_idiom, solitaire_time)
 
-    # 记录接龙次数
-    cnt = 0
+    # 输出接龙结果
+    idiom_set.show_solitaire_list()
 
-    # 设置接龙次数
-    times = 10
+    # 获取接龙结果
+    res_list = idiom_set.get_solitaire_list()
 
-    for i in range(times):
-        # 更新当前接龙单词的首字拼音
-        first_word = last_word
-        # 在满足要求的成语中随机选择一个
-        indexs = df[df['first'] == first_word]['idiom'].index
-        if indexs is []:
-            print('No available idioms!')
-            break
-        index = choice(indexs)
-        # 获取当前单词
-        idiom = df[index:index + 1]['idiom'].values[0]
-        # 更新当前单词的末字拼音
-        last_word = df[index:index + 1]['last'].values[0]
-        # 将成语添加到结果列表中
-        res_list.append(idiom)
-        cnt += 1
-
-    # 输出结果
-    print(f"共接龙{cnt}次，接龙次序如下：")
-
-    for idiom in res_list:
-        print(f"{idiom}")
-        if idiom != res_list[-1]:
-            print('|')
-            print('↓')
