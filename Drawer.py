@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 import turtle
 
 
@@ -8,6 +10,7 @@ class Drawer(turtle.Turtle):
         self.screenWidth = 800
         self.screenHeight = 600
         self.ht()
+        self.speed("fast")
         turtle.setup(self.screenWidth, self.screenHeight, 0, 0)
         turtle.colormode(255)
 
@@ -63,6 +66,30 @@ class Drawer(turtle.Turtle):
         self.getscreen().bgpic(pic_path)
 
     def move(self, pos_x, pos_y):
+        """
+        不带痕迹的goto
+        """
+
         self.penup()
         self.goto(pos_x, pos_y)
         self.pendown()
+
+    def draw_list(self, res_list, pos_x, pos_y, line_spacing=30):
+        """
+        从指定位置开始，以行的形式输出列表内容
+        :param res_list: 待输出的列表
+        :param pos_x: 初始横坐标
+        :param pos_y: 初始纵坐标
+        :param line_spacing: 行间距，默认为30
+        :return: None
+        """
+
+        self.move(pos_x, pos_y)
+        cnt = 0
+        for line in res_list:
+            pos_y -= line_spacing
+            # 边界检测
+            if pos_x > self.screenWidth // 2 or pos_x < -self.screenWidth // 2 or \
+                    pos_y > self.screenHeight // 2 or pos_y < -self.screenHeight // 2:
+                break
+            self.draw_text(line, pos_x, pos_y)

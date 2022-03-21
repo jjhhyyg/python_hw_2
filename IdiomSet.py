@@ -1,8 +1,13 @@
+# -*- coding: UTF-8 -*-
+
 import pandas as pd
 import codecs
 from xpinyin import Pinyin
-from random import choice
+import random
+import datetime
 import copy
+
+random.seed(datetime.datetime.now())
 
 
 class IdiomSet:
@@ -61,7 +66,7 @@ class IdiomSet:
             if indexs is []:
                 print('No available idioms!')
                 break
-            index = choice(indexs)
+            index = random.choice(indexs)
             # 获取当前单词
             idiom = tmp_df[index:index + 1]['idiom'].values[0]
             # 更新当前单词的末字拼音
@@ -82,7 +87,7 @@ class IdiomSet:
         for idiom in self.solitaire_list:
             print(f"{idiom}", end="")
             if idiom != self.solitaire_list[-1]:
-                print('---->',end="")
+                print('---->', end="")
 
     def get_solitaire_list(self):
         return self.solitaire_list.copy()

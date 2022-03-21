@@ -1,11 +1,10 @@
-import turtle
+# -*- coding: UTF-8 -*-
 
-import Drawer
+from IdiomDetail import IdiomDetail
 
-d = Drawer.Drawer()
+idiom_detail = IdiomDetail()
 
-d.create_edge()
+url = idiom_detail.get_url('叶公好龙')
+bs = idiom_detail.get_bs(url)
 
-d.draw_text("侯阳洋", -350, 250)
-
-turtle.done()
+idiom_detail.get_content(bs)
