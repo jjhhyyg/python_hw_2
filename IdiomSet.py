@@ -64,7 +64,7 @@ class IdiomSet:
             # 在满足要求的成语中随机选择一个
             indexs = tmp_df[tmp_df['first'] == first_pinyin]['idiom'].index
             if indexs is []:
-                print('No available idioms!')
+                self.solitaire_list.append('接龙完成')
                 break
             index = random.choice(indexs)
             # 获取当前单词
