@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-import random
 
 from IdiomSet import IdiomSet
 from IdiomDetail import IdiomDetail

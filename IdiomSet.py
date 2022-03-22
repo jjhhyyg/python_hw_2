@@ -14,7 +14,7 @@ class IdiomSet:
     def __init__(self):
         self.df = None
         self.file_path = ''
-        self.file_name = 'chengyu_utf8.txt'
+        self.file_name = './other/chengyu_utf8.txt'
         self.solitaire_list = []
 
     def set_idiom_df(self, encoding_type='utf-8'):
