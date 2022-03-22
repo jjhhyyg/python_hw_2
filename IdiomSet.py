@@ -62,7 +62,7 @@ class IdiomSet:
             # 更新当前接龙单词的首字拼音
             first_pinyin = last_pinyin
             # 在满足要求的成语中随机选择一个
-            indexs = tmp_df[tmp_df['first'] == first_pinyin]['idiom'].index
+            indexs = list(tmp_df[tmp_df['first'] == first_pinyin]['idiom'].index)
             if not indexs:
                 self.solitaire_list.append('接龙完成')
                 break
