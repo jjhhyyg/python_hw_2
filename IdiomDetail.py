@@ -15,7 +15,8 @@ class IdiomDetail:
     def __init__(self):
         # 请求头
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/99.0.4844.74 Safari/537.36"
         }
 
     def get_url(self, idiom):
@@ -25,9 +26,8 @@ class IdiomDetail:
         :return: 带成语的URL
         """
 
-        wd = {'word': idiom}
-        wd = urlencode(wd).split('=')
-        return 'https://baike.baidu.com/item/' + wd[1]
+        wd = {'q': idiom}
+        return 'https://www.123cha.com/chengyu/?' + urlencode(wd)
 
     def get_bs(self, url):
         """
@@ -51,5 +51,22 @@ class IdiomDetail:
         :param bs: 成语对应的BeautifulSoup对象
         :return: 成语释义的字符串
         """
-        content = bs.findAll('div', {'class': 'para'})[1].contents[0]
-        print(content)
+        # 基于网页源代码结构找到成语释义
+        if bs is not None:
+            try:
+                # 获取释义
+                content1 = bs.findAll('td', {'align': 'left'})[2].string
+                # 获取来源
+                content2 = bs.findAll('td', {'align': 'left'})[3].string
+                # 首行缩进2ch
+                content1 = "    " + content1
+                # 补句号
+                if not content1.endswith('。'):
+                    content1 = content1 + '。'
+                return content1 + content2
+            except IndexError:
+                return '未查询到成语释义'
+            except TypeError:
+                return '未查询到成语释义'
+        else:
+            return '未查询到成语释义'
