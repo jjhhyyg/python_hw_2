@@ -24,7 +24,7 @@ class IdiomSet:
         :return: None
         """
 
-        # l是用来保存列表的列表，每个小列表中包含三个元素[<成语>,<成语首字拼音>,<成语末字拼音>]
+        # l是用来保存列表的列表，每个小列表中包含三个元素[<成语>,<成语首字拼音>,<成语末字拼音>,<成语第一个字>,<成语最后一个字>]
         l = []
         p = Pinyin()
         with open(self.file_path + self.file_name, 'r', encoding=encoding_type) as raw_txt:
@@ -35,9 +35,9 @@ class IdiomSet:
                 normal_list = normal_line.split(" ==> ")
                 # 得到对应成语的无音节发音
                 pron = p.get_pinyin(normal_list[0], ' ').split(' ')
-                l.append([normal_list[0], pron[0], pron[-1]])
+                l.append([normal_list[0], pron[0], pron[-1], normal_list[0][0], normal_list[0][-1]])
         # 创建DataFrame对象
-        self.df = pd.DataFrame(l, columns=['idiom', 'first', 'last'])
+        self.df = pd.DataFrame(l, columns=['idiom', 'first', 'last', 'first_word', 'last_word'])
 
     def set_solitaire_list(self, first_idiom, solitaire_time=10):
         """
@@ -49,9 +49,8 @@ class IdiomSet:
 
         p = Pinyin()
         pron = p.get_pinyin(first_idiom, ' ').split(' ')
-        first_pinyin = ''
         last_pinyin = pron[-1]
-
+        last_word = first_idiom[-1]
         # 结果列表
         self.solitaire_list = [first_idiom]
 
@@ -60,9 +59,9 @@ class IdiomSet:
 
         for i in range(solitaire_time):
             # 更新当前接龙单词的首字拼音
-            first_pinyin = last_pinyin
+            first_pinyin, first_word = last_pinyin, last_word
             # 在满足要求的成语中随机选择一个
-            indexs = list(tmp_df[tmp_df['first'] == first_pinyin]['idiom'].index)
+            indexs = list(tmp_df[(tmp_df['first'] == first_pinyin) & (tmp_df['first_word'] != first_word)]['idiom'].index)
             if not indexs:
                 self.solitaire_list.append('接龙完成')
                 break
@@ -71,6 +70,8 @@ class IdiomSet:
             idiom = tmp_df[index:index + 1]['idiom'].values[0]
             # 更新当前单词的末字拼音
             last_pinyin = tmp_df[index:index + 1]['last'].values[0]
+            # 更新当前单词最后一个字
+            last_word = tmp_df[index:index + 1]['last_word'].values[0]
             # 将成语添加到结果列表中
             self.solitaire_list.append(idiom)
             # 删除暂存的DataFrame中的项
